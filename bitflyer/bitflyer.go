@@ -107,3 +107,56 @@ func (api *APIClient) GetBalance() ([]Balance, error) {
 	return balance, nil
 
 }
+
+type Ticker struct {
+	ProductCode     string  `json:"product_code"`
+	State           string  `json:"state"`
+	Timestamp       string  `json:"timestamp"`
+	TickID          int     `json:"tick_id"`
+	BestBid         float64 `json:"best_bid"`
+	BestAsk         float64 `json:"best_ask"`
+	BestBidSize     float64 `json:"best_bid_size"`
+	BestAskSize     float64 `json:"best_ask_size"`
+	TotalBidDepth   float64 `json:"total_bid_depth"`
+	TotalAskDepth   float64 `json:"total_ask_depth"`
+	MarketBidSize   int     `json:"market_bid_size"`
+	MarketAskSize   int     `json:"market_ask_size"`
+	Ltp             float64 `json:"ltp"`
+	Volume          float64 `json:"volume"`
+	VolumeByProduct float64 `json:"volume_by_product"`
+}
+
+// This function caculate the midprice of one day
+func (t *Ticker) GetMidPrice() float64 {
+	return (t.BestBid + t.BestAsk) / 2
+}
+
+// This function transform timestamp into RFC3339 which is available to database
+func (t *Ticker) DateTime() time.Time {
+	dateTime, err := time.Parse(time.RFC3339, t.Timestamp)
+	if err != nil {
+		log.Printf("action=DateTime, err=%s", err.Error())
+	}
+	return dateTime
+}
+
+// Truncate time into the duration you want(example: 12:12:12 -> duration time.Hour -> 12:00:00)
+func (t *Ticker) TruncateDateTime(duration time.Duration) time.Time {
+	return t.DateTime().Truncate(duration)
+}
+
+// Get the bitcoin(product_code) information from API
+func (api *APIClient) GetTicker(productCode string) (*Ticker, error) {
+	url := "ticker"
+	resp, err := api.doRequest("GET", url, map[string]string{"product_code": productCode}, nil)
+	if err != nil {
+		return nil, err
+	}
+	var ticker Ticker
+	err = json.Unmarshal(resp, &ticker)
+	if err != nil {
+		return nil, err
+	}
+	return &ticker, nil
+
+}
