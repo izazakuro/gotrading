@@ -2,25 +2,36 @@ package main
 
 import (
 	"fmt"
-	"gotrading/gotrading/bitflyer"
+	"gotrading/gotrading/app/models"
 	"gotrading/gotrading/config"
 	"gotrading/gotrading/utils"
-	"time"
 )
 
 func main() {
 	utils.LoggingSetting(config.Config.LogFile)
-	apiClient := bitflyer.New(config.Config.ApiKey, config.Config.ApiSecret)
+	/*
+		apiClient := bitflyer.New(config.Config.ApiKey, config.Config.ApiSecret)
 
-	tickerChannel := make(chan bitflyer.Ticker)
-	go apiClient.GetRealTimeTicker(config.Config.ProductCode, tickerChannel)
-	for ticker := range tickerChannel {
-		fmt.Println(ticker)
-		fmt.Println(ticker.GetMidPrice())
-		fmt.Println(ticker.DateTime())
-		fmt.Println(ticker.TruncateDateTime(time.Second))
-		fmt.Println(ticker.TruncateDateTime(time.Minute))
-		fmt.Println(ticker.TruncateDateTime(time.Hour))
+		order := &bitflyer.Order{
+			ProductCode:    config.Config.ProductCode,
+			ChildOrderType: "MARKET", // "LIMIT"
+			Side:           "BUY",    // or SELL
+			Size:           0.01,
+			//Price : (Price to BUY or SELL)
+			MinuteToExpires: 1,
+			TimeInForce:     "GTC",
+		}
+		res, _ := apiClient.SendOrder(order)
+		fmt.Println(res.ChildOdrderAcceptanceID)
 
-	}
+		orderID := "XXXXXXXXXXXXXXXXXXXXXXXXXX"
+		params := map[string]string{
+			"product_code":              config.Config.ProductCode,
+			"child_order_acceptance_id": orderID,
+		}
+		r, _ := apiClient.ListOrder(params)
+		fmt.Println(r)
+	*/
+	fmt.Println(models.DbConnection)
+
 }
