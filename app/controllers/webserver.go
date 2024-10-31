@@ -137,6 +137,11 @@ func apiCandleHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	ichimoku := r.URL.Query().Get("ichimoku")
+	if ichimoku != "" {
+		df.AddIchimoku()
+	}
+
 	js, err := json.Marshal(df)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
