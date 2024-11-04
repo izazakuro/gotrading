@@ -152,6 +152,57 @@ func apiCandleHandler(w http.ResponseWriter, r *http.Request) {
 		df.AddRSI(period)
 	}
 
+	macd := r.URL.Query().Get("macd")
+	if macd != "" {
+		strMacdPeriod1 := r.URL.Query().Get("macdPeriod1")
+		strMacdPeriod2 := r.URL.Query().Get("macdPeriod2")
+		strMacdPeriod3 := r.URL.Query().Get("macdPeriod3")
+		macdPeriod1, err := strconv.Atoi(strMacdPeriod1)
+		if strMacdPeriod1 == "" || err != nil || macdPeriod1 < 0 {
+			macdPeriod1 = 12
+		}
+
+		macdPeriod2, err := strconv.Atoi(strMacdPeriod2)
+		if strMacdPeriod2 == "" || err != nil || macdPeriod2 < 0 {
+			macdPeriod1 = 26
+		}
+
+		macdPeriod3, err := strconv.Atoi(strMacdPeriod3)
+		if strMacdPeriod3 == "" || err != nil || macdPeriod3 < 0 {
+			macdPeriod1 = 9
+		}
+
+		df.AddMacd(macdPeriod1, macdPeriod2, macdPeriod3)
+
+	}
+
+	hv := r.URL.Query().Get("hv")
+	if hv != "" {
+		strHvPeriod1 := r.URL.Query().Get("hvPeriod1")
+		strHvPeriod2 := r.URL.Query().Get("hvPeriod2")
+		strHvPeriod3 := r.URL.Query().Get("hvPeriod3")
+
+		hvPeriod1, err := strconv.Atoi(strHvPeriod1)
+		if strHvPeriod1 == "" || err != nil || hvPeriod1 < 0 {
+			hvPeriod1 = 21
+		}
+
+		hvPeriod2, err := strconv.Atoi(strHvPeriod2)
+		if strHvPeriod2 == "" || err != nil || hvPeriod2 < 0 {
+			hvPeriod1 = 63
+		}
+
+		hvPeriod3, err := strconv.Atoi(strHvPeriod3)
+		if strHvPeriod3 == "" || err != nil || hvPeriod3 < 0 {
+			hvPeriod1 = 252
+		}
+
+		df.AddHv(hvPeriod1)
+		df.AddHv(hvPeriod2)
+		df.AddHv(hvPeriod3)
+
+	}
+
 	js, err := json.Marshal(df)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
