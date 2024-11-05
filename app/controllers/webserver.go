@@ -203,6 +203,12 @@ func apiCandleHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	events := r.URL.Query().Get("events")
+	if events != "" {
+		firstTime := df.Candles[0].Time
+		df.AddEvents(firstTime)
+	}
+
 	js, err := json.Marshal(df)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

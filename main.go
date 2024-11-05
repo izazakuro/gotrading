@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"gotrading/gotrading/app/models"
-	"time"
+	"gotrading/gotrading/app/controllers"
+	"gotrading/gotrading/config"
+	"gotrading/gotrading/utils"
+	"log"
 )
 
 func main() {
@@ -33,7 +34,7 @@ func main() {
 	*/
 	//fmt.Println(models.DbConnection)
 
-	s := models.NewSingalEvents()
+	/*s := models.NewSingalEvents()
 	df, _ := models.GetAllCandle("BTC_JPY", time.Minute, 10)
 	c1 := df.Candles[0]
 	c2 := df.Candles[3]
@@ -43,5 +44,10 @@ func main() {
 	fmt.Println(models.GetSignalEventsAfterTime(c1.Time))
 	fmt.Println(s.CollectAfter(time.Now().Local().UTC()))
 	fmt.Println(s.CollectAfter(c1.Time))
+	*/
+
+	utils.LoggingSetting(config.Config.LogFile)
+	controllers.StreamIngestionData()
+	log.Println(controllers.StartWebServer())
 
 }
